@@ -59,7 +59,7 @@ object GhPublish extends AutoPlugin{
     ghPush := {
       val repoDir = ghRepoLocalFile.value getOrElse noGhRepoLocalError(ghRepoLocalEnv.value)
       val pushed = Git.open(repoDir).push().call()
-      streams.value.log.info("pushed: " + pushed.map(_.getMessages).mkString(","))
+      streams.value.log.info("pushed: " + pushed.map(_.getURI).mkString(","))
     },
 
     ghPublish := {
