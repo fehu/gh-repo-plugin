@@ -4,7 +4,7 @@ organization := "feh.util"
 
 name := "gh-repo-plugin"
 
-version := "0.1"
+version := "0.2-SNAPSHOT"
 
 crossScalaVersions := Seq("2.11.4, 2.10.4", "2.9.3", "2.9.2")
 

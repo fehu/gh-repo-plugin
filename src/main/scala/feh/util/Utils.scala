@@ -1,4 +1,4 @@
-package feh.util.sbt
+package feh.util
 
 import sbt._
 import scala.util.matching.Regex

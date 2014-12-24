@@ -1,4 +1,4 @@
-package feh.util.sbt
+package feh.util
 
 import org.eclipse.jgit.api.Git
 import sbt._
@@ -22,8 +22,6 @@ object GhPublish extends AutoPlugin{
   private val ghPublishLocal = TaskKey[Unit]("gh-repo-publish-local")
 
   override lazy val projectSettings = Seq(
-//    autoCompilerPlugins
-
     // Default Local ghRepo Environment variable
     ghRepoLocalEnv := "LOCAL_GITHUB_REPO",
 
@@ -46,22 +44,11 @@ object GhPublish extends AutoPlugin{
       val log = streams.value.log
       val repoDir = ghRepoLocalFile.value getOrElse noGhRepoLocalError(ghRepoLocalEnv.value)
       val branch = "gh-pages"
-      val message = s"updating gh-repository for project ${name.value}"
+      val message = s"updating gh-repository for project ${name.value} v.${version.value}"
       val git = Git.open(repoDir)
       val repo = git.getRepository
 
-      if(repo.getBranch != branch){
-        sys.error(s"'$branch' branch expected")
-//        log.warn(s"'$branch' branch expected, trying to checkout/pull")
-//        def checkout = git.checkout.setName(branch)
-
-//        git.branchList.call().find(_.getName == branch).map(_ => checkout.call()) orElse
-//          git.lsRemote.call().find(_.getName == branch).map{ _ =>
-//            checkout.setCreateBranch(true).setOrphan(true).call()
-//            git.pull.setRemoteBranchName(branch).call()
-//          } getOrElse
-//          sys.error(s"couldn't checkout/pull $branch")
-      }
+      if(repo.getBranch != branch)sys.error(s"'$branch' branch expected")
 
       git.add.addFilepattern(".").call()
       log.info("## " + message)
@@ -72,7 +59,7 @@ object GhPublish extends AutoPlugin{
     ghPush := {
       val repoDir = ghRepoLocalFile.value getOrElse noGhRepoLocalError(ghRepoLocalEnv.value)
       val pushed = Git.open(repoDir).push().call()
-      streams.value.log.info(pushed.mkString(","))
+      streams.value.log.info("pushed: " + pushed.map(_.getMessages).mkString(","))
     },
 
     ghPublish := {
