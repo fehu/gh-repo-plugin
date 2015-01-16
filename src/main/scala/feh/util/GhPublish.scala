@@ -63,7 +63,12 @@ object GhPublish extends AutoPlugin{
     },
 
     ghPublish := {
-      TaskUtils.runTasksForAllSubProjects(Project.extract(state.value).currentProject, state.value, ghPublishLocal, ghSubmit)
+      val currProj = Project.extract(state.value).currentProject
+      if(currProj.aggregate.isEmpty) {
+        Project.runTask(ghPublishLocal, state.value)
+        Project.runTask(ghSubmit, state.value)
+      }
+      else TaskUtils.runTasksForAllSubProjects(currProj, state.value, ghPublishLocal, ghSubmit)
       Project.runTask(ghPush, state.value)
     },
 
